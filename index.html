@@ -139,6 +139,9 @@
             const stockBody = document.getElementById('stockBody');
             stockBody.innerHTML = '';
 
+            // Ordenar o array stock com base na quantidade de caixas faltantes, do maior para o menor
+            stock.sort((a, b) => (b.quantity - b.currentQuantity) - (a.quantity - a.currentQuantity));
+
             stock.forEach((item, index) => {
                 const remainingQuantity = item.quantity - item.currentQuantity;
                 const row = `<tr>
