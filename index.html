@@ -52,6 +52,7 @@
                 <th>Nome do Produto</th>
                 <th>Quantidade Atual de Caixas</th>
                 <th>Quantidade Total de Caixas</th>
+                <th>Quantidade de Caixas Faltantes</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -117,10 +118,12 @@
             stockBody.innerHTML = '';
 
             stock.forEach((item, index) => {
+                const remainingQuantity = item.quantity - item.currentQuantity;
                 const row = `<tr>
                                 <td>${item.name}</td>
                                 <td>${item.currentQuantity}</td>
                                 <td>${item.quantity}</td>
+                                <td>${remainingQuantity}</td>
                                 <td>
                                     <button onclick="editCurrentQuantity(${index})">Editar Quantidade Atual</button>
                                     <button onclick="editTotalQuantity(${index})">Editar Quantidade Total</button>
