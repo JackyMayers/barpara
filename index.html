@@ -21,6 +21,11 @@
         th {
             background-color: #f2f2f2;
         }
+        input[type="text"],
+        input[type="number"] {
+            padding: 5px;
+            box-sizing: border-box;
+        }
         button {
             padding: 8px 16px;
             background-color: #4CAF50;
@@ -30,6 +35,14 @@
         }
         button:hover {
             background-color: #45a049;
+        }
+        .complete-button {
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            background-color: green;
+            color: white;
+            border-radius: 50%;
         }
     </style>
 </head>
@@ -90,22 +103,31 @@
             } else {
                 alert('Por favor, preencha todos os campos corretamente.');
             }
+
+            document.getElementById('productName').value = '';
+            document.getElementById('totalQuantity').value = '';
+            document.getElementById('currentQuantity').value = '';
         }
 
-        function editCurrentQuantity(index) {
-            const newCurrentQuantity = prompt('Digite a nova quantidade atual de caixas:');
-            if (newCurrentQuantity !== null && !isNaN(newCurrentQuantity)) {
-                stock[index].currentQuantity = parseInt(newCurrentQuantity);
+        function editCurrentQuantity(index, element) {
+            const newCurrentQuantity = parseInt(element.value);
+            if (!isNaN(newCurrentQuantity)) {
+                stock[index].currentQuantity = newCurrentQuantity;
                 renderStock();
             }
         }
 
-        function editTotalQuantity(index) {
-            const newTotalQuantity = prompt('Digite a nova quantidade total de caixas:');
-            if (newTotalQuantity !== null && !isNaN(newTotalQuantity)) {
-                stock[index].quantity = parseInt(newTotalQuantity);
+        function editTotalQuantity(index, element) {
+            const newTotalQuantity = parseInt(element.value);
+            if (!isNaN(newTotalQuantity)) {
+                stock[index].quantity = newTotalQuantity;
                 renderStock();
             }
+        }
+
+        function completeStock(index) {
+            stock[index].currentQuantity = stock[index].quantity;
+            renderStock();
         }
 
         function deleteProduct(index) {
@@ -121,12 +143,11 @@
                 const remainingQuantity = item.quantity - item.currentQuantity;
                 const row = `<tr>
                                 <td>${item.name}</td>
-                                <td>${item.currentQuantity}</td>
-                                <td>${item.quantity}</td>
+                                <td><input type="number" value="${item.currentQuantity}" onchange="editCurrentQuantity(${index}, this)"></td>
+                                <td><input type="number" value="${item.quantity}" onchange="editTotalQuantity(${index}, this)"></td>
                                 <td>${remainingQuantity}</td>
                                 <td>
-                                    <button onclick="editCurrentQuantity(${index})">Editar Quantidade Atual</button>
-                                    <button onclick="editTotalQuantity(${index})">Editar Quantidade Total</button>
+                                    <button class="complete-button" onclick="completeStock(${index})">&#8599;</button>
                                     <button onclick="deleteProduct(${index})">Excluir</button>
                                 </td>
                             </tr>`;
