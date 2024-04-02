@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Estoque - Supermarket</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h2>Gerenciador de Estoque - Supermarket</h2>
+
+    <div>
+        <label for="productName">Nome do Produto:</label>
+        <input type="text" id="productName">
+        <label for="totalQuantity">Quantidade Total de Caixas:</label>
+        <input type="number" id="totalQuantity" min="1">
+        <label for="currentQuantity">Quantidade Atual de Caixas:</label>
+        <input type="number" id="currentQuantity" min="0">
+        <button onclick="addProduct()">Adicionar Produto</button>
+    </div>
+
+    <table id="stockTable">
+        <thead>
+            <tr>
+                <th>Nome do Produto</th>
+                <th>Quantidade Atual de Caixas</th>
+                <th>Quantidade Total de Caixas</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="stockBody">
+            <!-- Lista de produtos será inserida aqui -->
+        </tbody>
+    </table>
+
+    <label for="fileInput">Carregar Estoque:</label>
+    <input type="file" id="fileInput" accept=".json">
+    <button onclick="loadStock()">Carregar</button>
+
+    <button onclick="saveStock()">Salvar Estoque</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script>
+        let stock = [];
+
+        function addProduct() {
+            const productName = document.getElementById('productName').value;
+            const totalQuantity = parseInt(document.getElementById('totalQuantity').value);
+            const currentQuantity = parseInt(document.getElementById('currentQuantity').value);
+
+            if (productName && !isNaN(totalQuantity) && !isNaN(currentQuantity)) {
+                const productIndex = stock.findIndex(item => item.name === productName);
+
+                if (productIndex !== -1) {
+                    stock[productIndex].quantity += totalQuantity;
+                    stock[productIndex].currentQuantity += currentQuantity;
+                } else {
+                    stock.push({ name: productName, quantity: totalQuantity, currentQuantity: currentQuantity });
+                }
+
+                renderStock();
+            } else {
+                alert('Por favor, preencha todos os campos corretamente.');
+            }
+        }
+
+        function editCurrentQuantity(index) {
+            const newCurrentQuantity = prompt('Digite a nova quantidade atual de caixas:');
+            if (newCurrentQuantity !== null && !isNaN(newCurrentQuantity)) {
+                stock[index].currentQuantity = parseInt(newCurrentQuantity);
+                renderStock();
+            }
+        }
+
+        function editTotalQuantity(index) {
+            const newTotalQuantity = prompt('Digite a nova quantidade total de caixas:');
+            if (newTotalQuantity !== null && !isNaN(newTotalQuantity)) {
+                stock[index].quantity = parseInt(newTotalQuantity);
+                renderStock();
+            }
+        }
+
+        function deleteProduct(index) {
+            stock.splice(index, 1);
+            renderStock();
+        }
+
+        function renderStock() {
+            const stockBody = document.getElementById('stockBody');
+            stockBody.innerHTML = '';
+
+            stock.forEach((item, index) => {
+                const row = `<tr>
+                                <td>${item.name}</td>
+                                <td>${item.currentQuantity}</td>
+                                <td>${item.quantity}</td>
+                                <td>
+                                    <button onclick="editCurrentQuantity(${index})">Editar Quantidade Atual</button>
+                                    <button onclick="editTotalQuantity(${index})">Editar Quantidade Total</button>
+                                    <button onclick="deleteProduct(${index})">Excluir</button>
+                                </td>
+                            </tr>`;
+                stockBody.innerHTML += row;
+            });
+        }
+
+        function saveStock() {
+            const jsonStock = JSON.stringify(stock);
+            const blob = new Blob([jsonStock], { type: 'application/json' });
+            saveAs(blob, 'stock.json');
+            alert('Estoque salvo com sucesso!');
+        }
+
+        function loadStock() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const jsonStock = event.target.result;
+                    stock = JSON.parse(jsonStock);
+                    renderStock();
+                    alert('Estoque carregado com sucesso!');
+                };
+                reader.readAsText(file);
+            } else {
+                alert('Por favor, selecione um arquivo.');
+            }
+        }
+    </script>
+</body>
+</html>
