@@ -131,8 +131,11 @@
         }
 
         function deleteProduct(index) {
-            stock.splice(index, 1);
-            renderStock();
+            const confirmDelete = confirm('Tem certeza que deseja excluir este produto?');
+            if (confirmDelete) {
+                stock.splice(index, 1);
+                renderStock();
+            }
         }
 
         function renderStock() {
