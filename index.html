@@ -67,13 +67,25 @@
         #searchBar {
             margin-bottom: 10px;
         }
+        /* Estilo para o botão de alternar modo */
+        #toggleModeButton {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 10px;
+            padding: 8px 16px;
+        }
+        #toggleModeButton:hover {
+            background-color: #0b7dda;
+        }
     </style>
 </head>
 <body>
     <h2>Gerenciador de Estoque - Supermercado</h2>
 
     <!-- Botão para alternar entre os modos claro e escuro -->
-    <button onclick="toggleDarkMode()">Alternar Modo Escuro</button>
+    <button id="toggleModeButton" onclick="toggleDarkMode()">Alternar Modo Escuro</button>
 
     <!-- Barra de pesquisa -->
     <div id="searchBar">
@@ -90,6 +102,11 @@
         <label for="currentQuantity">Quantidade Atual de Caixas:</label>
         <input type="number" id="currentQuantity" min="0">
         <button onclick="addProduct()">Adicionar Produto</button>
+    </div>
+
+    <!-- Elemento para exibir a quantidade de produtos cadastrados -->
+    <div>
+        <p><strong>Quantidade de Produtos Cadastrados:</strong> <span id="productCount">0</span></p>
     </div>
 
     <!-- Tabela para exibir o estoque -->
@@ -138,6 +155,7 @@
                 }
 
                 renderStock();
+                updateProductCount(); // Atualiza a quantidade de produtos cadastrados
             } else {
                 alert('Por favor, preencha todos os campos corretamente.');
             }
@@ -161,7 +179,8 @@
         function editTotalQuantity(index, element) {
             const newTotalQuantity = parseInt(element.value);
             if (!isNaN(newTotalQuantity)) {
-                stock[index].quantity = newTotalQuantity;
+                const originalIndex = stock.findIndex(item => item.name === element.parentNode.parentNode.cells[0].querySelector('input').defaultValue);
+                stock[originalIndex].quantity = newTotalQuantity;
                 renderStock();
             }
         }
@@ -178,6 +197,7 @@
             if (confirmDelete) {
                 stock.splice(index, 1);
                 renderStock();
+                updateProductCount(); // Atualiza a quantidade de produtos cadastrados
             }
         }
 
@@ -226,6 +246,7 @@
                     stock = JSON.parse(jsonStock);
                     renderStock();
                     alert('Estoque carregado com sucesso!');
+                    updateProductCount(); // Atualiza a quantidade de produtos cadastrados
                 };
                 reader.readAsText(file);
             } else {
@@ -251,6 +272,11 @@
             const originalIndex = stock.findIndex(item => item.name === element.defaultValue); // Encontrar o índice do produto na matriz original
             stock[originalIndex].name = newName; // Atualizar o nome do produto na matriz original
             renderStock(); // Renderizar a tabela de estoque
+        }
+
+        // Função para atualizar a quantidade de produtos cadastrados
+        function updateProductCount() {
+            document.getElementById('productCount').textContent = stock.length;
         }
     </script>
 </body>
