@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciador de Estoque - Supermarket</title>
+    <title>Gerenciador de Estoque - Supermercado</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #fff; /* Cor de fundo padrão */
+            color: #000; /* Cor do texto padrão */
         }
         table {
             width: 100%;
@@ -17,6 +19,8 @@
             padding: 8px;
             text-align: left;
             border-bottom: 1px solid #ddd;
+            background-color: #fff; /* Cor de fundo padrão para células */
+            color: #000; /* Cor do texto padrão para células */
         }
         th {
             background-color: #f2f2f2;
@@ -44,11 +48,40 @@
             color: white;
             border-radius: 50%;
         }
+        /* Modo escuro */
+        body.dark-mode {
+            background-color: #333;
+            color: #fff;
+        }
+        body.dark-mode table {
+            border-color: #666;
+        }
+        body.dark-mode th {
+            background-color: #444;
+        }
+        body.dark-mode td {
+            background-color: #222;
+            color: #fff;
+        }
+        /* Barra de pesquisa */
+        #searchBar {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
-    <h2>Gerenciador de Estoque - Supermarket</h2>
+    <h2>Gerenciador de Estoque - Supermercado</h2>
 
+    <!-- Botão para alternar entre os modos claro e escuro -->
+    <button onclick="toggleDarkMode()">Alternar Modo Escuro</button>
+
+    <!-- Barra de pesquisa -->
+    <div id="searchBar">
+        <label for="searchInput">Pesquisar Produto:</label>
+        <input type="text" id="searchInput" oninput="searchProduct()">
+    </div>
+
+    <!-- Formulário para adicionar um novo produto ao estoque -->
     <div>
         <label for="productName">Nome do Produto:</label>
         <input type="text" id="productName">
@@ -59,6 +92,7 @@
         <button onclick="addProduct()">Adicionar Produto</button>
     </div>
 
+    <!-- Tabela para exibir o estoque -->
     <table id="stockTable">
         <thead>
             <tr>
@@ -74,16 +108,20 @@
         </tbody>
     </table>
 
+    <!-- Botão para carregar o estoque de um arquivo -->
     <label for="fileInput">Carregar Estoque:</label>
     <input type="file" id="fileInput" accept=".json">
     <button onclick="loadStock()">Carregar</button>
 
+    <!-- Botão para salvar o estoque em um arquivo -->
     <button onclick="saveStock()">Salvar Estoque</button>
 
+    <!-- Script para incluir a biblioteca FileSaver.js e o código JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script>
         let stock = [];
 
+        // Função para adicionar um novo produto ao estoque
         function addProduct() {
             const productName = document.getElementById('productName').value;
             const totalQuantity = parseInt(document.getElementById('totalQuantity').value);
@@ -109,6 +147,7 @@
             document.getElementById('currentQuantity').value = '';
         }
 
+        // Função para editar a quantidade atual de caixas de um produto
         function editCurrentQuantity(index, element) {
             const newCurrentQuantity = parseInt(element.value);
             if (!isNaN(newCurrentQuantity)) {
@@ -117,6 +156,7 @@
             }
         }
 
+        // Função para editar a quantidade total de caixas de um produto
         function editTotalQuantity(index, element) {
             const newTotalQuantity = parseInt(element.value);
             if (!isNaN(newTotalQuantity)) {
@@ -125,11 +165,13 @@
             }
         }
 
+        // Função para marcar o estoque de um produto como completo
         function completeStock(index) {
             stock[index].currentQuantity = stock[index].quantity;
             renderStock();
         }
 
+        // Função para excluir um produto do estoque
         function deleteProduct(index) {
             const confirmDelete = confirm('Tem certeza que deseja excluir este produto?');
             if (confirmDelete) {
@@ -138,17 +180,20 @@
             }
         }
 
-        function renderStock() {
+        // Função para renderizar a tabela de estoque
+        function renderStock(filteredStock) {
             const stockBody = document.getElementById('stockBody');
             stockBody.innerHTML = '';
 
-            // Ordenar o array stock com base na quantidade de caixas faltantes, do maior para o menor
-            stock.sort((a, b) => (b.quantity - b.currentQuantity) - (a.quantity - a.currentQuantity));
+            const stockData = filteredStock || stock;
 
-            stock.forEach((item, index) => {
+            // Ordenar o array stock com base na quantidade de caixas faltantes, do maior para o menor
+            stockData.sort((a, b) => (b.quantity - b.currentQuantity) - (a.quantity - a.currentQuantity));
+
+            stockData.forEach((item, index) => {
                 const remainingQuantity = item.quantity - item.currentQuantity;
                 const row = `<tr>
-                                <td>${item.name}</td>
+                                <td><input type="text" value="${item.name}" onchange="editProductName(${index}, this)"></td>
                                 <td><input type="number" value="${item.currentQuantity}" onchange="editCurrentQuantity(${index}, this)"></td>
                                 <td><input type="number" value="${item.quantity}" onchange="editTotalQuantity(${index}, this)"></td>
                                 <td>${remainingQuantity}</td>
@@ -161,6 +206,7 @@
             });
         }
 
+        // Função para salvar o estoque em um arquivo
         function saveStock() {
             const jsonStock = JSON.stringify(stock);
             const blob = new Blob([jsonStock], { type: 'application/json' });
@@ -168,6 +214,7 @@
             alert('Estoque salvo com sucesso!');
         }
 
+        // Função para carregar o estoque de um arquivo
         function loadStock() {
             const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
@@ -183,6 +230,25 @@
             } else {
                 alert('Por favor, selecione um arquivo.');
             }
+        }
+
+        // Função para alternar entre os modos claro e escuro
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        // Função para pesquisar produtos na tabela de estoque
+        function searchProduct() {
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            const filteredStock = stock.filter(item => item.name.toLowerCase().includes(searchQuery));
+            renderStock(filteredStock);
+        }
+
+        // Função para editar o nome de um produto cadastrado
+        function editProductName(index, element) {
+            const newName = element.value;
+            stock[index].name = newName;
+            renderStock();
         }
     </script>
 </body>
