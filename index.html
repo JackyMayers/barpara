@@ -151,7 +151,8 @@
         function editCurrentQuantity(index, element) {
             const newCurrentQuantity = parseInt(element.value);
             if (!isNaN(newCurrentQuantity)) {
-                stock[index].currentQuantity = newCurrentQuantity;
+                const originalIndex = stock.findIndex(item => item.name === element.parentNode.parentNode.cells[0].querySelector('input').defaultValue);
+                stock[originalIndex].currentQuantity = newCurrentQuantity;
                 renderStock();
             }
         }
@@ -247,8 +248,9 @@
         // Função para editar o nome de um produto cadastrado
         function editProductName(index, element) {
             const newName = element.value;
-            stock[index].name = newName;
-            renderStock();
+            const originalIndex = stock.findIndex(item => item.name === element.defaultValue); // Encontrar o índice do produto na matriz original
+            stock[originalIndex].name = newName; // Atualizar o nome do produto na matriz original
+            renderStock(); // Renderizar a tabela de estoque
         }
     </script>
 </body>
