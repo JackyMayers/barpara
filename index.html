@@ -1,283 +1,100 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciador de Estoque - Supermercado</title>
+    <title>Calculadora de Itens</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #fff; /* Cor de fundo padrão */
-            color: #000; /* Cor do texto padrão */
+            background-color: #e3f2fd;
+            padding: 20px;
+            text-align: center;
         }
-        table {
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            max-width: 450px;
+            margin: auto;
+        }
+        input {
+            margin: 10px 0;
+            display: block;
             width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #90caf9;
+            border-radius: 5px;
+            font-size: 16px;
         }
-        th, td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-            background-color: #fff; /* Cor de fundo padrão para células */
-            color: #000; /* Cor do texto padrão para células */
+        h2 {
+            color: #1565c0;
         }
-        th {
-            background-color: #f2f2f2;
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
         }
-        input[type="text"],
-        input[type="number"] {
-            padding: 5px;
-            box-sizing: border-box;
-        }
-        button {
-            padding: 8px 16px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .complete-button {
-            padding: 0;
-            width: 30px;
-            height: 30px;
-            background-color: green;
-            color: white;
-            border-radius: 50%;
-        }
-        /* Modo escuro */
-        body.dark-mode {
-            background-color: #333;
-            color: #fff;
-        }
-        body.dark-mode table {
-            border-color: #666;
-        }
-        body.dark-mode th {
-            background-color: #444;
-        }
-        body.dark-mode td {
-            background-color: #222;
-            color: #fff;
-        }
-        /* Barra de pesquisa */
-        #searchBar {
-            margin-bottom: 10px;
-        }
-        /* Estilo para o botão de alternar modo */
-        #toggleModeButton {
-            background-color: #2196F3;
-            color: white;
-            border: none;
-            cursor: pointer;
-            margin-bottom: 10px;
-            padding: 8px 16px;
-        }
-        #toggleModeButton:hover {
-            background-color: #0b7dda;
+        .footer a {
+            color: #1565c0;
+            text-decoration: none;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <h2>Gerenciador de Estoque - Supermercado</h2>
-
-    <!-- Botão para alternar entre os modos claro e escuro -->
-    <button id="toggleModeButton" onclick="toggleDarkMode()">Alternar Modo Escuro</button>
-
-    <!-- Barra de pesquisa -->
-    <div id="searchBar">
-        <label for="searchInput">Pesquisar Produto:</label>
-        <input type="text" id="searchInput" oninput="searchProduct()">
+    <div class="container">
+        <h2>Calculadora de Itens</h2>
+        
+        <label>Quantidade de Espetinhos:</label>
+        <input type="number" id="qtdEspetinho" value="0" oninput="calcular()">
+        
+        <label>Quantidade de Campari:</label>
+        <input type="number" id="qtdCampari" value="0" oninput="calcular()">
+        
+        <label>Quantidade de Sucos:</label>
+        <input type="number" id="qtdSuco" value="0" oninput="calcular()">
+        
+        <h3>Ingredientes Necessários:</h3>
+        <p id="ingredientes"></p>
+        <h3>Valores Totais:</h3>
+        <p id="valores"></p>
     </div>
+    
+    <div class="footer">&copy; 2025 Direitos Reservados - <a href="https://jackymayers.github.io/" target="_blank">Jacky Mayers</a></div>
 
-    <!-- Formulário para adicionar um novo produto ao estoque -->
-    <div>
-        <label for="productName">Nome do Produto:</label>
-        <input type="text" id="productName">
-        <label for="totalQuantity">Quantidade Total de Caixas:</label>
-        <input type="number" id="totalQuantity" min="1">
-        <label for="currentQuantity">Quantidade Atual de Caixas:</label>
-        <input type="number" id="currentQuantity" min="0">
-        <button onclick="addProduct()">Adicionar Produto</button>
-    </div>
-
-    <!-- Elemento para exibir a quantidade de produtos cadastrados -->
-    <div>
-        <p><strong>Quantidade de Produtos Cadastrados:</strong> <span id="productCount">0</span></p>
-    </div>
-
-    <!-- Tabela para exibir o estoque -->
-    <table id="stockTable">
-        <thead>
-            <tr>
-                <th>Nome do Produto</th>
-                <th>Quantidade Atual de Caixas</th>
-                <th>Quantidade Total de Caixas</th>
-                <th>Quantidade de Caixas Faltantes</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody id="stockBody">
-            <!-- Lista de produtos será inserida aqui -->
-        </tbody>
-    </table>
-
-    <!-- Botão para carregar o estoque de um arquivo -->
-    <label for="fileInput">Carregar Estoque:</label>
-    <input type="file" id="fileInput" accept=".json">
-    <button onclick="loadStock()">Carregar</button>
-
-    <!-- Botão para salvar o estoque em um arquivo -->
-    <button onclick="saveStock()">Salvar Estoque</button>
-
-    <!-- Script para incluir a biblioteca FileSaver.js e o código JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script>
-        let stock = [];
+        function calcular() {
+            let qtdEspetinho = parseInt(document.getElementById("qtdEspetinho").value) || 0;
+            let qtdCampari = parseInt(document.getElementById("qtdCampari").value) || 0;
+            let qtdSuco = parseInt(document.getElementById("qtdSuco").value) || 0;
+            
+            let precoEspetinho = 350;
+            let precoSuco = 200;
+            let precoCampari = 100;
+            
+            let totalCarnes = qtdEspetinho * 3;
+            let totalMorango = qtdCampari * 2;
+            let totalAgua = (qtdCampari * 1) + (qtdSuco * 1);
+            let totalFrutas = qtdSuco * 3;
+            let totalPreco = (qtdEspetinho * precoEspetinho) + (qtdSuco * precoSuco) + (qtdCampari * precoCampari);
 
-        // Função para adicionar um novo produto ao estoque
-        function addProduct() {
-            const productName = document.getElementById('productName').value;
-            const totalQuantity = parseInt(document.getElementById('totalQuantity').value);
-            const currentQuantity = parseInt(document.getElementById('currentQuantity').value);
+            let ingredientes = `Para fazer:<br>` +
+                `- ${qtdEspetinho} espetinhos, você precisa de ${totalCarnes} carnes.<br>` +
+                `- ${qtdCampari} campari, você precisa de ${totalMorango} morangos e ${qtdCampari} água.<br>` +
+                `- ${qtdSuco} sucos, você precisa de ${totalFrutas} frutas e ${qtdSuco} água.<br>` +
+                `Total de água necessária: ${totalAgua}.`;
 
-            if (productName && !isNaN(totalQuantity) && !isNaN(currentQuantity)) {
-                const productIndex = stock.findIndex(item => item.name === productName);
-
-                if (productIndex !== -1) {
-                    stock[productIndex].quantity += totalQuantity;
-                    stock[productIndex].currentQuantity += currentQuantity;
-                } else {
-                    stock.push({ name: productName, quantity: totalQuantity, currentQuantity: currentQuantity });
-                }
-
-                renderStock();
-                updateProductCount(); // Atualiza a quantidade de produtos cadastrados
-            } else {
-                alert('Por favor, preencha todos os campos corretamente.');
-            }
-
-            document.getElementById('productName').value = '';
-            document.getElementById('totalQuantity').value = '';
-            document.getElementById('currentQuantity').value = '';
+            let valores = `Valor total dos itens:<br>` +
+                `- Espetinhos: $${qtdEspetinho * precoEspetinho}<br>` +
+                `- Sucos: $${qtdSuco * precoSuco}<br>` +
+                `- Campari: $${qtdCampari * precoCampari}<br>` +
+                `<strong>Total: $${totalPreco}</strong>`;
+            
+            document.getElementById("ingredientes").innerHTML = ingredientes;
+            document.getElementById("valores").innerHTML = valores;
         }
 
-        // Função para editar a quantidade atual de caixas de um produto
-        function editCurrentQuantity(index, element) {
-            const newCurrentQuantity = parseInt(element.value);
-            if (!isNaN(newCurrentQuantity)) {
-                const originalIndex = stock.findIndex(item => item.name === element.parentNode.parentNode.cells[0].querySelector('input').defaultValue);
-                stock[originalIndex].currentQuantity = newCurrentQuantity;
-                renderStock();
-            }
-        }
-
-        // Função para editar a quantidade total de caixas de um produto
-        function editTotalQuantity(index, element) {
-            const newTotalQuantity = parseInt(element.value);
-            if (!isNaN(newTotalQuantity)) {
-                const originalIndex = stock.findIndex(item => item.name === element.parentNode.parentNode.cells[0].querySelector('input').defaultValue);
-                stock[originalIndex].quantity = newTotalQuantity;
-                renderStock();
-            }
-        }
-
-        // Função para marcar o estoque de um produto como completo
-        function completeStock(index) {
-            stock[index].currentQuantity = stock[index].quantity;
-            renderStock();
-        }
-
-        // Função para excluir um produto do estoque
-        function deleteProduct(index) {
-            const confirmDelete = confirm('Tem certeza que deseja excluir este produto?');
-            if (confirmDelete) {
-                stock.splice(index, 1);
-                renderStock();
-                updateProductCount(); // Atualiza a quantidade de produtos cadastrados
-            }
-        }
-
-        // Função para renderizar a tabela de estoque
-        function renderStock(filteredStock) {
-            const stockBody = document.getElementById('stockBody');
-            stockBody.innerHTML = '';
-
-            const stockData = filteredStock || stock;
-
-            // Ordenar o array stock com base na quantidade de caixas faltantes, do maior para o menor
-            stockData.sort((a, b) => (b.quantity - b.currentQuantity) - (a.quantity - a.currentQuantity));
-
-            stockData.forEach((item, index) => {
-                const remainingQuantity = item.quantity - item.currentQuantity;
-                const row = `<tr>
-                                <td><input type="text" value="${item.name}" onchange="editProductName(${index}, this)"></td>
-                                <td><input type="number" value="${item.currentQuantity}" onchange="editCurrentQuantity(${index}, this)"></td>
-                                <td><input type="number" value="${item.quantity}" onchange="editTotalQuantity(${index}, this)"></td>
-                                <td>${remainingQuantity}</td>
-                                <td>
-                                    <button class="complete-button" onclick="completeStock(${index})">&#8599;</button>
-                                    <button onclick="deleteProduct(${index})">Excluir</button>
-                                </td>
-                            </tr>`;
-                stockBody.innerHTML += row;
-            });
-        }
-
-        // Função para salvar o estoque em um arquivo
-        function saveStock() {
-            const jsonStock = JSON.stringify(stock);
-            const blob = new Blob([jsonStock], { type: 'application/json' });
-            saveAs(blob, 'stock.json');
-            alert('Estoque salvo com sucesso!');
-        }
-
-        // Função para carregar o estoque de um arquivo
-        function loadStock() {
-            const fileInput = document.getElementById('fileInput');
-            const file = fileInput.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const jsonStock = event.target.result;
-                    stock = JSON.parse(jsonStock);
-                    renderStock();
-                    alert('Estoque carregado com sucesso!');
-                    updateProductCount(); // Atualiza a quantidade de produtos cadastrados
-                };
-                reader.readAsText(file);
-            } else {
-                alert('Por favor, selecione um arquivo.');
-            }
-        }
-
-        // Função para alternar entre os modos claro e escuro
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-        }
-
-        // Função para pesquisar produtos na tabela de estoque
-        function searchProduct() {
-            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
-            const filteredStock = stock.filter(item => item.name.toLowerCase().includes(searchQuery));
-            renderStock(filteredStock);
-        }
-
-        // Função para editar o nome de um produto cadastrado
-        function editProductName(index, element) {
-            const newName = element.value;
-            const originalIndex = stock.findIndex(item => item.name === element.defaultValue); // Encontrar o índice do produto na matriz original
-            stock[originalIndex].name = newName; // Atualizar o nome do produto na matriz original
-            renderStock(); // Renderizar a tabela de estoque
-        }
-
-        // Função para atualizar a quantidade de produtos cadastrados
-        function updateProductCount() {
-            document.getElementById('productCount').textContent = stock.length;
-        }
+        window.onload = calcular;
     </script>
 </body>
 </html>
