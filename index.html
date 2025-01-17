@@ -13,46 +13,50 @@
             align-items: center;
             height: 100vh;
             flex-direction: column;
+            overflow: hidden;
         }
         .container {
             background: white;
-            padding: 20px;
+            padding: 15px;
             border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            max-width: 450px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            max-width: 420px;
             text-align: center;
-            position: relative;
-            z-index: 1;
         }
         input {
-            margin: 10px 0;
+            margin: 5px 0;
             display: block;
             width: 100%;
-            padding: 10px;
+            padding: 8px;
             border: 1px solid #90caf9;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 14px;
         }
         h2 {
             color: #1565c0;
+            margin-bottom: 10px;
         }
         .footer {
-            margin-top: 20px;
-            font-size: 14px;
+            margin-top: 10px;
+            font-size: 12px;
             color: #555;
-            text-align: center;
         }
         .footer a {
             color: #1565c0;
             text-decoration: none;
             font-weight: bold;
         }
-        .image-container {
-            margin-top: 20px;
-        }
         .image-container img {
-            max-width: 80%; /* Ajustado para diminuir a imagem */
+            max-width: 70%;
             height: auto;
+        }
+        .carne-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .carne-container input {
+            width: 60%;
         }
     </style>
 </head>
@@ -60,21 +64,26 @@
     <div class="container">
         <h2>Calculadora de Itens</h2>
         
-        <label>Quantidade de Espetinhos (R$350 cada):</label>
+        <label>Espetinhos (R$350 cada):</label>
         <input type="number" id="qtdEspetinho" value="0" oninput="calcular()">
         
-        <label>Quantidade de Campari (R$100 cada):</label>
+        <label>Campari (R$100 cada):</label>
         <input type="number" id="qtdCampari" value="0" oninput="calcular()">
         
-        <label>Quantidade de Sucos (R$200 cada):</label>
+        <label>Sucos (R$200 cada):</label>
         <input type="number" id="qtdSuco" value="0" oninput="calcular()">
+        
+        <div class="carne-container">
+            <label>Comprar Carne (R$30 cada):</label>
+            <input type="number" id="qtdCarne" value="0" oninput="calcular()">
+            <span id="totalCarne">R$0</span>
+        </div>
         
         <h3>Ingredientes Necessários:</h3>
         <p id="ingredientes"></p>
         <h3>Valores Totais:</h3>
         <p id="valores"></p>
 
-        <!-- Imagem abaixo dos valores e acima dos direitos -->
         <div class="image-container">
             <img src="https://i.postimg.cc/NfYGspSV/image.png" alt="Imagem do produto">
         </div>
@@ -87,16 +96,19 @@
             let qtdEspetinho = parseInt(document.getElementById("qtdEspetinho").value) || 0;
             let qtdCampari = parseInt(document.getElementById("qtdCampari").value) || 0;
             let qtdSuco = parseInt(document.getElementById("qtdSuco").value) || 0;
+            let qtdCarne = parseInt(document.getElementById("qtdCarne").value) || 0;
             
             let precoEspetinho = 350;
             let precoSuco = 200;
             let precoCampari = 100;
+            let precoCarne = 30;
             
             let totalCarnes = qtdEspetinho * 3;
             let totalMorango = qtdCampari * 2;
             let totalAgua = (qtdCampari * 1) + (qtdSuco * 1);
             let totalFrutas = qtdSuco * 3;
             let totalPreco = (qtdEspetinho * precoEspetinho) + (qtdSuco * precoSuco) + (qtdCampari * precoCampari);
+            let totalCarnePreco = qtdCarne * precoCarne;
 
             let ingredientes = `Para fazer:<br>` +
                 `- ${qtdEspetinho} espetinhos, você precisa de ${totalCarnes} carnes.<br>` +
@@ -112,6 +124,7 @@
             
             document.getElementById("ingredientes").innerHTML = ingredientes;
             document.getElementById("valores").innerHTML = valores;
+            document.getElementById("totalCarne").innerText = `R$${totalCarnePreco}`;
         }
 
         window.onload = calcular;
