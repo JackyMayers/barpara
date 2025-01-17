@@ -6,8 +6,13 @@
         body {
             font-family: Arial, sans-serif;
             background-color: #e3f2fd;
-            padding: 20px;
-            text-align: center;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
         }
         .container {
             background: white;
@@ -15,7 +20,9 @@
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
             max-width: 450px;
-            margin: auto;
+            text-align: center;
+            position: relative;
+            z-index: 1;
         }
         input {
             margin: 10px 0;
@@ -33,11 +40,19 @@
             margin-top: 20px;
             font-size: 14px;
             color: #555;
+            text-align: center;
         }
         .footer a {
             color: #1565c0;
             text-decoration: none;
             font-weight: bold;
+        }
+        .image-container {
+            margin-top: 20px;
+        }
+        .image-container img {
+            max-width: 80%; /* Ajustado para diminuir a imagem */
+            height: auto;
         }
     </style>
 </head>
@@ -58,8 +73,13 @@
         <p id="ingredientes"></p>
         <h3>Valores Totais:</h3>
         <p id="valores"></p>
+
+        <!-- Imagem abaixo dos valores e acima dos direitos -->
+        <div class="image-container">
+            <img src="https://i.postimg.cc/NfYGspSV/image.png" alt="Imagem do produto">
+        </div>
     </div>
-    
+
     <div class="footer">&copy; 2025 Direitos Reservados - <a href="https://jackymayers.github.io/" target="_blank">Jacky Mayers</a></div>
 
     <script>
