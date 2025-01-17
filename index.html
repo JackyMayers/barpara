@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="icon" href="https://i.postimg.cc/MG7qzW4x/emote.png" type="image/x-icon">
     <title>Calculadora de Itens</title>
     <style>
         body {
@@ -46,13 +45,13 @@
     <div class="container">
         <h2>Calculadora de Itens</h2>
         
-        <label>Quantidade de Espetinhos:</label>
+        <label>Quantidade de Espetinhos (R$350 cada):</label>
         <input type="number" id="qtdEspetinho" value="0" oninput="calcular()">
         
-        <label>Quantidade de Campari:</label>
+        <label>Quantidade de Campari (R$100 cada):</label>
         <input type="number" id="qtdCampari" value="0" oninput="calcular()">
         
-        <label>Quantidade de Sucos:</label>
+        <label>Quantidade de Sucos (R$200 cada):</label>
         <input type="number" id="qtdSuco" value="0" oninput="calcular()">
         
         <h3>Ingredientes Necessários:</h3>
@@ -86,10 +85,10 @@
                 `Total de água necessária: ${totalAgua}.`;
 
             let valores = `Valor total dos itens:<br>` +
-                `- Espetinhos: $${qtdEspetinho * precoEspetinho}<br>` +
-                `- Sucos: $${qtdSuco * precoSuco}<br>` +
-                `- Campari: $${qtdCampari * precoCampari}<br>` +
-                `<strong>Total: $${totalPreco}</strong>`;
+                `- Espetinhos: R$${qtdEspetinho * precoEspetinho}<br>` +
+                `- Sucos: R$${qtdSuco * precoSuco}<br>` +
+                `- Campari: R$${qtdCampari * precoCampari}<br>` +
+                `<strong>Total: R$${totalPreco}</strong>`;
             
             document.getElementById("ingredientes").innerHTML = ingredientes;
             document.getElementById("valores").innerHTML = valores;
