@@ -151,7 +151,7 @@
     </div>
 
     <footer>
-        <p>© 2025 - Todos os direitos reservados. Feito com ❤, ajuda de IA e um pouquinho de preguiça por <a href="https://jackymayers.github.io/" target="_blank" style="color: #e0e0e0;">Jacky Mayers</a> !</p>
+        <p>© 2025 - Todos os direitos reservados. Feito com ❤, ajuda de IA e um pouquinho de preguiça por <a href="https://jackymayers.github.io/" target="_blank" style="color: #e0e0e0;">JackyMayers</a>.</p>
     </footer>
 
     <script>
@@ -169,8 +169,13 @@
             // Calcular para os produtos fixos do cardápio
             for (let i = 1; i <= 8; i++) {
                 const quantidade = parseInt(document.getElementById(`quantidade-${i}`).value) || 0;
+
+                // Definir preços específicos para os produtos
+                let precoUnitario = PRECO_UNITARIO; // Preço padrão de R$ 600
+                if (i === 2) precoUnitario = 500;  // Espetinho de Coração: R$ 500
+
                 custoTotal += quantidade * CUSTO_UNITARIO;
-                vendaTotal += quantidade * PRECO_UNITARIO;
+                vendaTotal += quantidade * precoUnitario;
             }
 
             // Calcular para o produto fora do cardápio
