@@ -1,133 +1,189 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bar do Para</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #e3f2fd;
-            padding: 0;
             margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            flex-direction: column;
-            overflow: hidden;
+            padding: 0;
+            background-color: #121212;
+            color: #ffffff;
         }
-        .container {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            max-width: 420px;
+        .totais {
+            position: sticky;
+            top: 0;
+            background: #1e1e1e;
+            padding: 20px;
+            z-index: 1000;
             text-align: center;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
         }
-        input {
-            margin: 5px 0;
-            display: block;
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #90caf9;
-            border-radius: 5px;
-            font-size: 14px;
+        .totais h3 {
+            margin: 10px 0;
         }
-        h2 {
-            color: #1565c0;
-            margin-bottom: 10px;
-        }
-        .footer {
-            margin-top: 10px;
-            font-size: 12px;
-            color: #555;
-        }
-        .footer a {
-            color: #1565c0;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .image-container img {
-            max-width: 70%;
-            height: auto;
-        }
-        .carne-container {
+        .menu {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
         }
-        .carne-container input {
-            width: 60%;
+        .menu-item, .extra-item {
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            width: 280px;
+            text-align: center;
+            padding: 15px;
+        }
+        .menu-item img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+        .menu-item h3, .extra-item h3 {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+        .menu-item p, .extra-item p {
+            margin: 5px 0;
+        }
+        input[type="number"], input[type="text"] {
+            width: 90%;
+            padding: 5px;
+            margin: 5px 0;
+            border: 1px solid #555;
+            border-radius: 5px;
+            background: #1e1e1e;
+            color: #ffffff;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #333;
+            color: #fff;
+            margin-top: 20px;
+        }
+        .logo-bottom {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .logo-bottom img {
+            max-width: 200px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Calculadora de Itens</h2>
-        
-        <label>Espetinhos (R$350 cada):</label>
-        <input type="number" id="qtdEspetinho" value="0" oninput="calcular()">
-        
-        <label>Campari (R$100 cada):</label>
-        <input type="number" id="qtdCampari" value="0" oninput="calcular()">
-        
-        <label>Sucos (R$200 cada):</label>
-        <input type="number" id="qtdSuco" value="0" oninput="calcular()">
-        
-        <div class="carne-container">
-            <label>Comprar Carne (R$30 cada):</label>
-            <input type="number" id="qtdCarne" value="0" oninput="calcular()">
-            <span id="totalCarne">R$0</span>
-        </div>
-        
-        <h3>Ingredientes Necessários:</h3>
-        <p id="ingredientes"></p>
-        <h3>Valores Totais:</h3>
-        <p id="valores"></p>
+    <!-- Totais Fixos no Topo -->
+    <div class="totais">
+        <h3>Totais</h3>
+        <p><strong>Custo Total:</strong> <span id="custo-total">R$ 0</span></p>
+        <p><strong>Lucro Total:</strong> <span id="lucro-total">R$ 0</span></p>
+        <p><strong>Valor Total para o Cliente:</strong> <span id="venda-total">R$ 0</span></p>
+    </div>
 
-        <div class="image-container">
-            <img src="https://i.postimg.cc/NfYGspSV/image.png" alt="Imagem do produto">
+    <div class="menu">
+        <!-- Produtos fixos do cardápio -->
+        <div class="menu-item">
+            <img src="https://i.postimg.cc/8kZ60D9q/image.png" alt="Iscas de Peixe">
+            <h3>Iscas de Peixe</h3>
+            <label for="quantidade-1">Quantidade:</label>
+            <input type="number" id="quantidade-1" placeholder="Ex: 1" min="1" oninput="calcularTotais()">
+        </div>
+        <div class="menu-item">
+            <img src="https://i.postimg.cc/zGQmtLFV/image.png" alt="Espetinho de Coração">
+            <h3>Espetinho de Coração</h3>
+            <label for="quantidade-2">Quantidade:</label>
+            <input type="number" id="quantidade-2" placeholder="Ex: 1" min="1" oninput="calcularTotais()">
+        </div>
+        <div class="menu-item">
+            <img src="https://i.postimg.cc/4dzrxWk9/image.png" alt="Torresmo Crocante">
+            <h3>Torresmo Crocante</h3>
+            <label for="quantidade-3">Quantidade:</label>
+            <input type="number" id="quantidade-3" placeholder="Ex: 1" min="1" oninput="calcularTotais()">
+        </div>
+        <div class="menu-item">
+            <img src="https://i.postimg.cc/qq4Wh24Z/image.png" alt="Bolinho de Bacalhau">
+            <h3>Bolinho de Bacalhau</h3>
+            <label for="quantidade-4">Quantidade:</label>
+            <input type="number" id="quantidade-4" placeholder="Ex: 1" min="1" oninput="calcularTotais()">
+        </div>
+        <div class="menu-item">
+            <img src="https://i.postimg.cc/ZnH2r0qY/image.png" alt="Campari">
+            <h3>Campari</h3>
+            <label for="quantidade-5">Quantidade:</label>
+            <input type="number" id="quantidade-5" placeholder="Ex: 1" min="1" oninput="calcularTotais()">
+        </div>
+        <div class="menu-item">
+            <img src="https://i.postimg.cc/VkdpCfP1/image.png" alt="Matcha">
+            <h3>Matcha</h3>
+            <label for="quantidade-6">Quantidade:</label>
+            <input type="number" id="quantidade-6" placeholder="Ex: 1" min="1" oninput="calcularTotais()">
+        </div>
+        <div class="menu-item">
+            <img src="https://i.postimg.cc/W1CKmBsZ/image.png" alt="Água Tônica com Limão">
+            <h3>Água Tônica com Limão</h3>
+            <label for="quantidade-7">Quantidade:</label>
+            <input type="number" id="quantidade-7" placeholder="Ex: 1" min="1" oninput="calcularTotais()">
+        </div>
+        <div class="menu-item">
+            <img src="https://i.postimg.cc/ydzbt0gY/image.png" alt="Chopp">
+            <h3>Chopp</h3>
+            <label for="quantidade-8">Quantidade:</label>
+            <input type="number" id="quantidade-8" placeholder="Ex: 1" min="1" oninput="calcularTotais()">
+        </div>
+        <!-- Produto fora do cardápio -->
+        <div class="extra-item">
+            <h3>Produto Fora do Cardápio</h3>
+            <label for="quantidade-extra">Quantidade:</label>
+            <input type="number" id="quantidade-extra" placeholder="Ex: 1" min="1" oninput="calcularTotais()">
+            <label for="preco-extra">Preço de Venda (R$):</label>
+            <input type="number" id="preco-extra" placeholder="Ex: 600" min="0" oninput="calcularTotais()">
         </div>
     </div>
 
-    <div class="footer">&copy; 2025 Direitos Reservados - <a href="https://jackymayers.github.io/" target="_blank">Jacky Mayers</a></div>
+    <div class="logo-bottom">
+        <img src="https://i.postimg.cc/LXT1RMXg/image.png" alt="Logo do Bar">
+    </div>
+
+    <footer>
+        <p>© 2025 - Todos os direitos reservados. Feito com ❤, ajuda de IA e um pouquinho de preguiça por <a href="https://jackymayers.github.io/" target="_blank" style="color: #e0e0e0;">Jacky Mayers</a> !</p>
+    </footer>
 
     <script>
-        function calcular() {
-            let qtdEspetinho = parseInt(document.getElementById("qtdEspetinho").value) || 0;
-            let qtdCampari = parseInt(document.getElementById("qtdCampari").value) || 0;
-            let qtdSuco = parseInt(document.getElementById("qtdSuco").value) || 0;
-            let qtdCarne = parseInt(document.getElementById("qtdCarne").value) || 0;
-            
-            let precoEspetinho = 350;
-            let precoSuco = 200;
-            let precoCampari = 100;
-            let precoCarne = 30;
-            
-            let totalCarnes = qtdEspetinho * 3;
-            let totalMorango = qtdCampari * 2;
-            let totalAgua = (qtdCampari * 1) + (qtdSuco * 1);
-            let totalFrutas = qtdSuco * 3;
-            let totalPreco = (qtdEspetinho * precoEspetinho) + (qtdSuco * precoSuco) + (qtdCampari * precoCampari);
-            let totalCarnePreco = qtdCarne * precoCarne;
+        const CUSTO_UNITARIO = 250;
+        const PRECO_UNITARIO = 600;
 
-            let ingredientes = `Para fazer:<br>` +
-                `- ${qtdEspetinho} espetinhos, você precisa de ${totalCarnes} carnes.<br>` +
-                `- ${qtdCampari} campari, você precisa de ${totalMorango} morangos e ${qtdCampari} água.<br>` +
-                `- ${qtdSuco} sucos, você precisa de ${totalFrutas} frutas e ${qtdSuco} água.<br>` +
-                `Total de água necessária: ${totalAgua}.`;
-
-            let valores = `Valor total dos itens:<br>` +
-                `- Espetinhos: R$${qtdEspetinho * precoEspetinho}<br>` +
-                `- Sucos: R$${qtdSuco * precoSuco}<br>` +
-                `- Campari: R$${qtdCampari * precoCampari}<br>` +
-                `<strong>Total: R$${totalPreco}</strong>`;
-            
-            document.getElementById("ingredientes").innerHTML = ingredientes;
-            document.getElementById("valores").innerHTML = valores;
-            document.getElementById("totalCarne").innerText = `R$${totalCarnePreco}`;
+        function formatarValor(valor) {
+            return valor.toLocaleString("pt-BR", { minimumFractionDigits: 0 });
         }
 
-        window.onload = calcular;
+        function calcularTotais() {
+            let custoTotal = 0;
+            let vendaTotal = 0;
+
+            // Calcular para os produtos fixos do cardápio
+            for (let i = 1; i <= 8; i++) {
+                const quantidade = parseInt(document.getElementById(`quantidade-${i}`).value) || 0;
+                custoTotal += quantidade * CUSTO_UNITARIO;
+                vendaTotal += quantidade * PRECO_UNITARIO;
+            }
+
+            // Calcular para o produto fora do cardápio
+            const quantidadeExtra = parseInt(document.getElementById("quantidade-extra").value) || 0;
+            const precoExtra = parseFloat(document.getElementById("preco-extra").value) || 0;
+            vendaTotal += quantidadeExtra * precoExtra;
+
+            const lucroTotal = vendaTotal - custoTotal;
+
+            document.getElementById("custo-total").innerText = `R$ ${formatarValor(custoTotal)}`;
+            document.getElementById("lucro-total").innerText = `R$ ${formatarValor(lucroTotal)}`;
+            document.getElementById("venda-total").innerText = `R$ ${formatarValor(vendaTotal)}`;
+        }
     </script>
 </body>
 </html>
